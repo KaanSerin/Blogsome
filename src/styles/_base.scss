@@ -9,13 +9,37 @@ body {
   color: $black-color;
 }
 
-.App {
-  .posts {
-    border: 1px solid red;
+.posts {
+  .post {
+    background-color: lighten($secondary-color, 20);
+    color: $white-color;
+    min-height: 200px;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
 
-    .post {
-      background-color: lighten($secondary-color, 20);
-      color: $white-color;
-    }
+.new-post {
+  border: 1px solid $black-color;
+  padding: 20px;
+}
+
+nav {
+  margin-bottom: 20px;
+
+  a {
+    color: $primary-color;
+    font-size: 1.2rem;
+    display: inline-block;
+    margin: 0 20px;
+  }
+
+  a.active,
+  a:hover {
+    color: $primary-color;
+    text-decoration: none;
+    border-bottom: 3px solid $secondary-color;
   }
 }
