@@ -12,7 +12,7 @@ const NewPost = (props) => {
     props.addPost(title, body);
     setTitle("");
     setBody("");
-    history.push("/");
+    history.push("/my-posts");
   };
 
   return (
