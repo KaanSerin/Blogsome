@@ -9,10 +9,15 @@ import AuthenticationForm from "./components/Authentication/AuthenticationForm";
 import axios from "axios";
 
 function App() {
-  const [posts, setPosts] = useState([]);
+  const [postsState, setPostsState] = useState({
+    isLoading: false,
+    posts: [],
+  });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authenticationData, setAuthenticationData] = useState(null);
+  const [authenticationState, setAuthenticationState] = useState({
+    isAuthenticated: false,
+    authenticationData: null,
+  });
 
   const history = useHistory();
 
@@ -22,49 +27,54 @@ function App() {
       title,
       body,
     };
-    const newPosts = [...posts, newPost];
+    const newPosts = [...postsState.posts, newPost];
     axios
       .put(
-        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationData.localId}.json`,
+        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}.json`,
         newPosts
       )
-      .then((response) => setPosts(newPosts))
+      .then((response) => setPostsState({ isLoading: false, posts: newPosts }))
       .catch((error) => console.log(error));
   };
 
+  const onAuthenticationHandler = (data) => {
+    setAuthenticationState({ isAuthenticated: true, authenticationData: data });
+    history.push("/my-posts");
+  };
+
   useEffect(() => {
-    if (isAuthenticated) {
+    if (authenticationState.isAuthenticated) {
+      setPostsState({ ...postsState, isLoading: true });
       // get posts
       axios
         .get(
-          `https://blogsome-f30d4.firebaseio.com/posts/${authenticationData.localId}.json`
+          `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}.json`
         )
         .then((response) => {
           console.log(response.data);
-          setPosts(response.data);
+          setPostsState({
+            isLoading: false,
+            posts: response.data ? response.data : [],
+          });
         })
         .catch((error) => console.log(error));
     }
-  }, [isAuthenticated]);
-
-  const onAuthenticationHandler = (data) => {
-    setAuthenticationData(data);
-    setIsAuthenticated(true);
-    history.push("/my-posts");
-  };
+  }, [authenticationState.isAuthenticated]);
 
   return (
     <div className="App">
       <h1>Bloggerly...</h1>
 
-      {isAuthenticated ? <Navbar isAuthenticated={isAuthenticated} /> : null}
+      {authenticationState.isAuthenticated ? (
+        <Navbar isAuthenticated={authenticationState.isAuthenticated} />
+      ) : null}
 
       <Switch>
         <Route path="/new-post">
           <NewPost addPost={addPostHandler} />
         </Route>
         <Route path="/my-posts" exact>
-          <Posts posts={posts} />
+          <Posts isLoading={postsState.isLoading} posts={postsState.posts} />
         </Route>
         <Route path="/" exact>
           <AuthenticationForm onAuthenticated={onAuthenticationHandler} />
