@@ -31,33 +31,47 @@ function App() {
     const newPosts = [...postsState.posts, newPost];
     axios
       .put(
-        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}.json`,
+        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`,
         newPosts
       )
       .then((response) => setPostsState({ isLoading: false, posts: newPosts }))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error.message));
+  };
+
+  const deletePostHandler = (postId) => {
+    const postsFiltered = postsState.posts.filter((post) => post.id !== postId);
+    setPostsState({ ...postsState, isLoading: true });
+    axios
+      .put(
+        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`,
+        postsFiltered
+      )
+      .then((response) =>
+        setPostsState({ isLoading: false, posts: postsFiltered })
+      )
+      .catch((error) => console.log(error.message));
   };
 
   const onAuthenticationHandler = (data) => {
-    localStorage.setItem("userData", JSON.stringify(data));
-    setAuthenticationState({ isAuthenticated: true, authenticationData: data });
+    const currentDate = new Date();
+    const storedData = {
+      idToken: data.idToken,
+      localId: data.localId,
+      expireDate: currentDate.setHours(
+        currentDate.getHours() + data.expiresIn / 3600
+      ),
+      expiresIn: data.expiresIn,
+    };
+    localStorage.setItem("userData", JSON.stringify(storedData));
+
+    setAuthenticationState({
+      isAuthenticated: true,
+      authenticationData: storedData,
+    });
 
     setTimeout(() => {
       console.log("expired getting new token");
       onLogoutHandler();
-      // axios
-      //   .post(
-      //     "https://securetoken.googleapis.com/v1/token?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs",
-      //     {
-      //       grant_type: "refresh_token",
-      //       refresh_token: localStorage.getItem("refreshToken"),
-      //     }
-      //   )
-      //   .then((response) => {
-      //     onAuthenticationHandler(response.data);
-      //     console.log("got new token");
-      //   })
-      //   .catch((error) => console.log(error.message));
     }, +data.expiresIn * 1000);
 
     history.push("/my-posts");
@@ -80,10 +94,17 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem("userData") !== null) {
-      setAuthenticationState({
-        isAuthenticated: true,
-        authenticationData: JSON.parse(localStorage.getItem("userData")),
-      });
+      if (
+        new Date() <
+        new Date(JSON.parse(localStorage.getItem("userData")).expireDate)
+      ) {
+        setAuthenticationState({
+          isAuthenticated: true,
+          authenticationData: JSON.parse(localStorage.getItem("userData")),
+        });
+      } else {
+        onLogoutHandler();
+      }
     }
 
     if (authenticationState.isAuthenticated) {
@@ -91,7 +112,7 @@ function App() {
       // get posts
       axios
         .get(
-          `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}.json`
+          `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`
         )
         .then((response) => {
           console.log(response.data);
@@ -124,7 +145,11 @@ function App() {
             <NewPost addPost={addPostHandler} />
           </Route>
           <Route path="/my-posts" exact>
-            <Posts isLoading={postsState.isLoading} posts={postsState.posts} />
+            <Posts
+              isLoading={postsState.isLoading}
+              posts={postsState.posts}
+              deletePost={deletePostHandler}
+            />
           </Route>
           <Route path="/logout" exact>
             <Logout logout={onLogoutHandler} />
@@ -142,7 +167,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Bloggerly...</h1>
+      <h1>Blogsome...</h1>
       {routes}
     </div>
   );

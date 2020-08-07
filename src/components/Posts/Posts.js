@@ -2,9 +2,14 @@ import React from "react";
 import Post from "./Post/Post";
 import { Spinner } from "reactstrap";
 
-const Posts = ({ posts, isLoading }) => {
+const Posts = ({ posts, isLoading, deletePost }) => {
   const postList = posts.map((post) => (
-    <Post key={post.id} title={post.title} body={post.body} />
+    <Post
+      key={post.id}
+      title={post.title}
+      body={post.body}
+      deletePostHandler={() => deletePost(post.id)}
+    />
   ));
 
   let output = postList.length > 0 ? postList : <h3>You have no posts :(</h3>;
