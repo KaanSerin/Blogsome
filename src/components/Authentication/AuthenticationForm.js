@@ -16,32 +16,28 @@ const AuthenticationForm = ({ onAuthenticated }) => {
       returnSecureToken: true,
     };
 
-    // If sign up
-    if (isSignUp) {
-      axios
-        .post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs",
-          data
-        )
-        .then((response) => {
-          console.log(response.data);
-          onAuthenticated(response.data);
-        })
-        .catch((err) => console.log(err));
-    }
-    // If sign in
-    else {
-      axios
-        .post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs",
-          data
-        )
-        .then((response) => {
-          console.log(response.data);
-          onAuthenticated(response.data);
-        })
-        .catch((err) => console.log(err));
-    }
+    const url = isSignUp
+      ? "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs"
+      : "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs";
+
+    axios
+      .post(url, data)
+      .then((response) => {
+        const currentDate = new Date();
+        const storedData = {
+          idToken: response.data.idToken,
+          localId: response.data.localId,
+          expireDate: currentDate.setHours(
+            currentDate.getHours() + response.data.expiresIn / 3600
+          ),
+          expiresIn: response.data.expiresIn,
+        };
+
+        localStorage.setItem("userData", JSON.stringify(storedData));
+
+        onAuthenticated(storedData);
+      })
+      .catch((err) => console.log(err));
 
     setEmail("");
     setPassword("");

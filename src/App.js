@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import "./main.scss";
 import Posts from "./components/Posts/Posts";
 import NewPost from "./components/NewPost/NewPost";
@@ -8,66 +8,60 @@ import Navbar from "./components/Navbar/Navbar";
 import AuthenticationForm from "./components/Authentication/AuthenticationForm";
 import axios from "axios";
 import Logout from "./components/Authentication/Logout";
+import { postsReducer } from "./Reducers/postsReducer";
+import { authenticationReducer } from "./Reducers/authenticationReducer";
 
 function App() {
-  const [postsState, setPostsState] = useState({
+  const [postsState, dispatch] = useReducer(postsReducer, {
     isLoading: false,
     posts: [],
   });
 
-  const [authenticationState, setAuthenticationState] = useState({
-    isAuthenticated: false,
-    authenticationData: null,
-  });
+  const [authenticationState, dispatchAuth] = useReducer(
+    authenticationReducer,
+    {
+      isAuthenticated: false,
+      authenticationData: null,
+    }
+  );
 
   const history = useHistory();
 
   const addPostHandler = (title, body) => {
-    const newPost = {
-      id: uuid(),
-      title,
-      body,
-    };
-    const newPosts = [...postsState.posts, newPost];
+    const newPosts = [
+      ...postsState.posts,
+      {
+        id: uuid(),
+        title,
+        body,
+      },
+    ];
+
     axios
       .put(
-        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`,
+        `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`,
         newPosts
       )
-      .then((response) => setPostsState({ isLoading: false, posts: newPosts }))
+      .then(() => dispatch({ type: "UPDATE_POSTS", value: newPosts }))
       .catch((error) => console.log(error.message));
   };
 
   const deletePostHandler = (postId) => {
     const postsFiltered = postsState.posts.filter((post) => post.id !== postId);
-    setPostsState({ ...postsState, isLoading: true });
+
+    dispatch({ type: "SET_LOADING" });
+
     axios
       .put(
-        `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`,
+        `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`,
         postsFiltered
       )
-      .then((response) =>
-        setPostsState({ isLoading: false, posts: postsFiltered })
-      )
+      .then(() => dispatch({ type: "UPDATE_POSTS", value: postsFiltered }))
       .catch((error) => console.log(error.message));
   };
 
   const onAuthenticationHandler = (data) => {
-    const currentDate = new Date();
-    const storedData = {
-      idToken: data.idToken,
-      localId: data.localId,
-      expireDate: currentDate.setHours(
-        currentDate.getHours() + data.expiresIn / 3600
-      ),
-      expiresIn: data.expiresIn,
-    };
-    localStorage.setItem("userData", JSON.stringify(storedData));
-
-    setAuthenticationState({
-      isAuthenticated: true,
-      authenticationData: storedData,
-    });
+    dispatchAuth({ type: "LOGIN", value: data });
 
     setTimeout(() => {
       console.log("expired getting new token");
@@ -79,33 +73,19 @@ function App() {
 
   const onLogoutHandler = () => {
     localStorage.removeItem("userData");
-    setAuthenticationState({
-      isAuthenticated: false,
-      authenticationData: null,
-    });
-
-    setPostsState({
-      isLoading: false,
-      posts: [],
-    });
-
-    console.log("logged out");
+    dispatchAuth({ type: "LOGOUT" });
+    dispatch({ type: "CLEAR_POSTS" });
   };
 
   // The componentDidMount and update
   useEffect(() => {
     // if the user has logged in before
-    if (localStorage.getItem("userData") !== null) {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+
+    if (userData !== null) {
       // and if the stored expiration date is in the future
-      if (
-        new Date() <
-        new Date(JSON.parse(localStorage.getItem("userData")).expireDate)
-      ) {
-        // authenticate
-        setAuthenticationState({
-          isAuthenticated: true,
-          authenticationData: JSON.parse(localStorage.getItem("userData")),
-        });
+      if (new Date() < new Date(userData.expireDate)) {
+        dispatchAuth({ type: "LOGIN", value: userData });
       } else {
         // if the expiration date is passed, logout.
         onLogoutHandler();
@@ -114,21 +94,14 @@ function App() {
 
     // If the user signs up or logs in
     if (authenticationState.isAuthenticated) {
-      // set Loading to true to display the spinner
-      setPostsState({ ...postsState, isLoading: true });
+      dispatch({ type: "SET_LOADING" });
 
-      // get posts
       axios
         .get(
-          `https://blogsome-f30d4.firebaseio.com/posts/${authenticationState.authenticationData.localId}/posts.json`
+          `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`
         )
         .then((response) => {
-          console.log(response.data);
-          // Update the posts array and stop the loading
-          setPostsState({
-            isLoading: false,
-            posts: response.data ? response.data : [],
-          });
+          dispatch({ type: "UPDATE_POSTS", value: response.data });
         })
         .catch((error) => console.log(error));
     }
@@ -173,7 +146,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Blogsome...</h1>
+      <h1>Blogsome</h1>
       {authenticationState.isAuthenticated ? <Navbar /> : null}
       {routes}
     </div>
