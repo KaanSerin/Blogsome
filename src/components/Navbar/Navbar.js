@@ -1,23 +1,20 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const Navbar = ({ isAuthenticated }) => {
+const Navbar = () => {
   return (
     <nav>
       <NavLink to="/my-posts" exact>
         Home
       </NavLink>
 
-      {isAuthenticated ? (
-        <NavLink to="/new-post" exact>
-          New Post
-        </NavLink>
-      ) : null}
-      {isAuthenticated ? (
-        <NavLink to="/logout" exact>
-          Logout
-        </NavLink>
-      ) : null}
+      <NavLink to="/new-post" exact>
+        New Post
+      </NavLink>
+
+      <NavLink to="/logout" exact>
+        Logout
+      </NavLink>
     </nav>
   );
 };

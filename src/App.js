@@ -92,23 +92,31 @@ function App() {
     console.log("logged out");
   };
 
+  // The componentDidMount and update
   useEffect(() => {
+    // if the user has logged in before
     if (localStorage.getItem("userData") !== null) {
+      // and if the stored expiration date is in the future
       if (
         new Date() <
         new Date(JSON.parse(localStorage.getItem("userData")).expireDate)
       ) {
+        // authenticate
         setAuthenticationState({
           isAuthenticated: true,
           authenticationData: JSON.parse(localStorage.getItem("userData")),
         });
       } else {
+        // if the expiration date is passed, logout.
         onLogoutHandler();
       }
     }
 
+    // If the user signs up or logs in
     if (authenticationState.isAuthenticated) {
+      // set Loading to true to display the spinner
       setPostsState({ ...postsState, isLoading: true });
+
       // get posts
       axios
         .get(
@@ -116,6 +124,7 @@ function App() {
         )
         .then((response) => {
           console.log(response.data);
+          // Update the posts array and stop the loading
           setPostsState({
             isLoading: false,
             posts: response.data ? response.data : [],
@@ -138,36 +147,34 @@ function App() {
 
   if (authenticationState.isAuthenticated) {
     routes = (
-      <React.Fragment>
-        <Navbar isAuthenticated={authenticationState.isAuthenticated} />
-        <Switch>
-          <Route path="/new-post">
-            <NewPost addPost={addPostHandler} />
-          </Route>
-          <Route path="/my-posts" exact>
-            <Posts
-              isLoading={postsState.isLoading}
-              posts={postsState.posts}
-              deletePost={deletePostHandler}
-            />
-          </Route>
-          <Route path="/logout" exact>
-            <Logout logout={onLogoutHandler} />
-          </Route>
-          <Route path="/" exact>
-            <AuthenticationForm onAuthenticated={onAuthenticationHandler} />
-          </Route>
-          <Route path="*">
-            <h3>404 Not Found</h3>
-          </Route>
-        </Switch>
-      </React.Fragment>
+      <Switch>
+        <Route path="/new-post">
+          <NewPost addPost={addPostHandler} />
+        </Route>
+        <Route path="/my-posts" exact>
+          <Posts
+            isLoading={postsState.isLoading}
+            posts={postsState.posts}
+            deletePost={deletePostHandler}
+          />
+        </Route>
+        <Route path="/logout" exact>
+          <Logout logout={onLogoutHandler} />
+        </Route>
+        <Route path="/" exact>
+          <AuthenticationForm onAuthenticated={onAuthenticationHandler} />
+        </Route>
+        <Route path="*">
+          <h3>404 Not Found</h3>
+        </Route>
+      </Switch>
     );
   }
 
   return (
     <div className="App">
       <h1>Blogsome...</h1>
+      {authenticationState.isAuthenticated ? <Navbar /> : null}
       {routes}
     </div>
   );
