@@ -1,7 +1,7 @@
 // Contained within this file are all your resets, variables, mixins, and any utility classes.
 
 $primary-color: #ff1654;
-$secondary-color: #247ba0;
+$secondary-color: #0b98d4;
 $black-color: #222;
 $white-color: rgb(250, 250, 250);
 $grey-color: #ced4da;
@@ -37,7 +37,7 @@ nav {
   margin-bottom: 20px;
 
   a {
-    color: $primary-color;
+    color: $black-color;
     font-size: 1.2rem;
     display: inline-block;
     margin: 0 20px;
@@ -45,9 +45,9 @@ nav {
 
   a.active,
   a:hover {
-    color: $primary-color;
+    color: $black-color;
     text-decoration: none;
-    border-bottom: 3px solid $secondary-color;
+    border-bottom: 2px solid $primary-color;
   }
 }
 

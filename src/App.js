@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import "./main.scss";
 import Posts from "./components/Posts/Posts";
 import NewPost from "./components/NewPost/NewPost";
@@ -77,9 +77,8 @@ function App() {
     dispatch({ type: "CLEAR_POSTS" });
   };
 
-  // The componentDidMount and update
   useEffect(() => {
-    // if the user has logged in before
+    // checking if the user has logged in before
     const userData = JSON.parse(localStorage.getItem("userData"));
 
     if (userData !== null) {
@@ -92,18 +91,20 @@ function App() {
       }
     }
 
-    // If the user signs up or logs in
+    const getPosts = async () => {
+      try {
+        const response = await axios.get(
+          `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`
+        );
+        dispatch({ type: "UPDATE_POSTS", value: response.data });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     if (authenticationState.isAuthenticated) {
       dispatch({ type: "SET_LOADING" });
-
-      axios
-        .get(
-          `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`
-        )
-        .then((response) => {
-          dispatch({ type: "UPDATE_POSTS", value: response.data });
-        })
-        .catch((error) => console.log(error));
+      getPosts();
     }
   }, [authenticationState.isAuthenticated]);
 

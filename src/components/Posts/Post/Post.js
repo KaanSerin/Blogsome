@@ -1,5 +1,4 @@
 import React from "react";
-import lodash from "lodash";
 import { Button } from "reactstrap";
 
 const Post = ({ title, body, deletePostHandler }) => {

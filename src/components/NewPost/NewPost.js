@@ -23,6 +23,7 @@ const NewPost = (props) => {
           <Input
             type="text"
             id="title"
+            required
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           ></Input>
@@ -32,6 +33,7 @@ const NewPost = (props) => {
           <Input
             type="textarea"
             id="post"
+            required
             value={body}
             onChange={(event) => setBody(event.target.value)}
           ></Input>

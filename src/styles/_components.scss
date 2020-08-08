@@ -1,1 +1,26 @@
 // Anything reusable such as buttons, navbars, cards etc.
+
+.btn.btn-danger {
+  background-color: $primary-color;
+}
+
+.btn.btn-outline-danger {
+  color: $primary-color;
+  border-color: $primary-color;
+}
+
+.btn.btn-outline-danger:hover {
+  background-color: $primary-color;
+}
+
+.btn.btn-danger:hover {
+  background-color: darken($primary-color, 8);
+}
+
+.btn.btn-info {
+  background-color: $secondary-color;
+}
+
+.btn.btn-info:hover {
+  background-color: darken($secondary-color, 8);
+}

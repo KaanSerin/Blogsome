@@ -8,13 +8,15 @@ const Navbar = () => {
         Home
       </NavLink>
 
-      <NavLink to="/new-post" exact>
-        New Post
-      </NavLink>
+      <span>
+        <NavLink to="/new-post" exact>
+          New Post
+        </NavLink>
 
-      <NavLink to="/logout" exact>
-        Logout
-      </NavLink>
+        <NavLink to="/logout" exact>
+          Logout
+        </NavLink>
+      </span>
     </nav>
   );
 };
