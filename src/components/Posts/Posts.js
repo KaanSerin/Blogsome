@@ -6,6 +6,7 @@ const Posts = ({ posts, isLoading, deletePost }) => {
   const postList = posts.map((post) => (
     <Post
       key={post.id}
+      id={post.id}
       title={post.title}
       body={post.body}
       deletePostHandler={() => deletePost(post.id)}

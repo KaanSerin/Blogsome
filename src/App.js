@@ -10,6 +10,7 @@ import axios from "axios";
 import Logout from "./components/Authentication/Logout";
 import { postsReducer } from "./Reducers/postsReducer";
 import { authenticationReducer } from "./Reducers/authenticationReducer";
+import FullPost from "./components/Posts/FullPost/FullPost";
 
 function App() {
   const [postsState, dispatch] = useReducer(postsReducer, {
@@ -78,6 +79,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log("App [UseEffect]");
     // checking if the user has logged in before
     const userData = JSON.parse(localStorage.getItem("userData"));
 
@@ -131,6 +133,9 @@ function App() {
             posts={postsState.posts}
             deletePost={deletePostHandler}
           />
+        </Route>
+        <Route path="/my-posts/post" exact>
+          <FullPost posts={postsState.posts} />
         </Route>
         <Route path="/logout" exact>
           <Logout logout={onLogoutHandler} />
