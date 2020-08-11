@@ -21,7 +21,24 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s ease-in-out;
+    transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
+
+    &.postItem-enter,
+    &.postItem-appear {
+      opacity: 0;
+    }
+    &.postItem-enter-active,
+    &.postItem-appear-done {
+      opacity: 1;
+      // transition: opacity 300ms ease-in;
+    }
+    &.postItem-exit {
+      opacity: 1;
+    }
+    &.postItem-exit-active {
+      opacity: 0;
+      // transition: opacity 300ms ease-out;
+    }
 
     button {
       width: 20%;

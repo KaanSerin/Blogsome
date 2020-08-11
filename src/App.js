@@ -50,14 +50,15 @@ function App() {
   const deletePostHandler = (postId) => {
     const postsFiltered = postsState.posts.filter((post) => post.id !== postId);
 
-    dispatch({ type: "SET_LOADING" });
+    //dispatch({ type: "SET_LOADING" });
+    dispatch({ type: "UPDATE_POSTS", value: postsFiltered });
 
     axios
       .put(
         `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`,
         postsFiltered
       )
-      .then(() => dispatch({ type: "UPDATE_POSTS", value: postsFiltered }))
+      /*.then(() => dispatch({ type: "UPDATE_POSTS", value: postsFiltered }))*/
       .catch((error) => console.log(error.message));
   };
 
