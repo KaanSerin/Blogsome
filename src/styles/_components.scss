@@ -33,3 +33,10 @@
     background-color: $secondary-color;
   }
 }
+
+.form-group {
+  .error-message {
+    color: $primary-color;
+    font-weight: 500;
+  }
+}

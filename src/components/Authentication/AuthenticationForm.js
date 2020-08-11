@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import axios from "axios";
+import _ from "lodash";
 
 const AuthenticationForm = ({ onAuthenticated }) => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -37,7 +39,14 @@ const AuthenticationForm = ({ onAuthenticated }) => {
 
         onAuthenticated(storedData);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        // convert the ugly error message to something more readable
+        const errorMessage = _.capitalize(
+          error.response.data.error.message.replace(/_/g, " ")
+        );
+
+        setErrorMessage(errorMessage);
+      });
 
     setEmail("");
     setPassword("");
@@ -47,6 +56,9 @@ const AuthenticationForm = ({ onAuthenticated }) => {
     <div className="authentication">
       <Form onSubmit={onSubmitHandler}>
         <FormGroup>
+          {errorMessage !== "" ? (
+            <p className="error-message">{errorMessage}</p>
+          ) : null}
           <Label>Email</Label>
           <Input
             type="email"
