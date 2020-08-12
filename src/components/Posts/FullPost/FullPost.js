@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Spinner } from "reactstrap";
 import Post from "../Post/Post";
+import FadeInOnLoad from "../../FadeInOnLoad/FadeInOnLoad";
 
 const FullPost = React.memo(({ posts }) => {
   const history = useHistory();
@@ -23,7 +24,7 @@ const FullPost = React.memo(({ posts }) => {
     );
   }
 
-  return fullPost;
+  return <FadeInOnLoad>{fullPost}</FadeInOnLoad>;
 });
 
 export default FullPost;

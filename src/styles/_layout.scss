@@ -3,6 +3,7 @@
 html,
 body {
   margin: 0;
+  color: $black-color;
 }
 
 * {
@@ -16,25 +17,81 @@ body {
   margin: 10px auto;
 
   nav {
+    margin-bottom: 30px;
     padding: 8px;
     box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
+    a {
+      color: $black-color;
+      font-size: 1.2rem;
+      display: inline-block;
+      margin: 0 20px;
+
+      &.active,
+      &:hover {
+        color: $black-color;
+        text-decoration: none;
+        border-bottom: 2px solid $primary-color;
+      }
+    }
+  }
+}
+
+.posts {
+  .post {
+    border: 1px solid $grey-color;
+    border-radius: 12px;
+    color: $black-color;
+    min-height: 200px;
+    margin: 20px 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, opacity 0.3s ease-in-out;
+
+    &.postItem-enter,
+    &.postItem-appear {
+      opacity: 0;
+    }
+    &.postItem-enter-active,
+    &.postItem-appear-done {
+      opacity: 1;
+      // transition: opacity 300ms ease-in;
+    }
+    &.postItem-exit {
+      opacity: 1;
+    }
+    &.postItem-exit-active {
+      opacity: 0;
+      // transition: opacity 300ms ease-out;
+    }
+
+    button {
+      width: 20%;
+      margin: 6px auto;
+    }
+
+    &:hover {
+      box-shadow: $box-shadow;
+      transform: scale(1.03);
+    }
   }
 }
 
 .new-post {
   text-align: start;
+  border: 1px solid $grey-color;
+  padding: 20px;
 
   textarea {
-    min-height: 200px;
+    min-height: 400px;
   }
 }
 
 .full-post {
   width: 65%;
   margin: 0 auto;
-  animation: 300ms ease-in fadeIn;
 
   div {
     font-size: 1.2rem;
@@ -43,17 +100,13 @@ body {
   }
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .authentication {
   width: 50%;
+  border: 1px solid $grey-color;
+  padding: 15px;
+  margin: 20px auto;
+  height: 400px;
+
   form {
     height: 50%;
     display: flex;
