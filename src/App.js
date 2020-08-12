@@ -153,7 +153,6 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Blogsome</h1>
       {authenticationState.isAuthenticated ? <Navbar /> : null}
       {routes}
     </div>

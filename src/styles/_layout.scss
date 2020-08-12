@@ -12,9 +12,12 @@ body {
 .App {
   text-align: center;
   width: 90%;
+  padding-top: 20px;
   margin: 10px auto;
 
   nav {
+    padding: 8px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
   }
@@ -25,6 +28,27 @@ body {
 
   textarea {
     min-height: 200px;
+  }
+}
+
+.full-post {
+  width: 65%;
+  margin: 0 auto;
+  animation: 300ms ease-in fadeIn;
+
+  div {
+    font-size: 1.2rem;
+    line-height: 2.3rem;
+    margin-top: 30px;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
