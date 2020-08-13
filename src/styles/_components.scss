@@ -2,9 +2,11 @@
 
 .btn.btn-danger {
   background-color: $primary-color;
+  border-color: $primary-color;
 
   &:hover {
     background-color: darken($primary-color, 8);
+    border-color: darken($primary-color, 8);
   }
 }
 
@@ -14,14 +16,18 @@
 
   &:hover {
     background-color: $primary-color;
+    border-color: $primary-color;
+    color: $white-color;
   }
 }
 
 .btn.btn-info {
   background-color: $secondary-color;
+  border-color: $secondary-color;
 
   &:hover {
     background-color: darken($secondary-color, 8);
+    border-color: darken($secondary-color, 8);
   }
 }
 
@@ -31,6 +37,7 @@
 
   &:hover {
     background-color: $secondary-color;
+    border-color: $secondary-color;
   }
 }
 
@@ -38,6 +45,5 @@
   .error-message {
     color: $primary-color;
     font-weight: 500;
-    
   }
 }

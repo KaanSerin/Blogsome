@@ -53,8 +53,8 @@ const AuthenticationForm = ({ onAuthenticated }) => {
     };
 
     const url = isSignUp
-      ? "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs"
-      : "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDungJQTA_dlkQY_0pKmcMdJB5K9ZMlOFs";
+      ? `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_AUTH_KEY}`
+      : `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_AUTH_KEY}`;
 
     sendAuthenticationRequest(url, data);
 
