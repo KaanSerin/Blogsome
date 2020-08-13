@@ -1,7 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { Spinner } from "reactstrap";
-import Post from "../Post/Post";
 import FadeInOnLoad from "../../FadeInOnLoad/FadeInOnLoad";
 
 const FullPost = React.memo(({ posts }) => {
@@ -17,7 +16,7 @@ const FullPost = React.memo(({ posts }) => {
         <h2>{fullPost.title}</h2>
         <div>
           {fullPost.body.split("\n").map((line, index) => (
-            <div key={index}>{line}</div>
+            <div key={index}>{line ? line : <br />}</div>
           ))}
         </div>
       </div>

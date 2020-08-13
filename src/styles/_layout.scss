@@ -12,8 +12,8 @@ body {
 
 .App {
   text-align: center;
-  width: 90%;
   padding-top: 20px;
+  padding: 0 50px;
   margin: 10px auto;
 
   nav {
@@ -44,7 +44,8 @@ body {
     border-radius: 12px;
     color: $black-color;
     min-height: 200px;
-    margin: 20px 0;
+    max-width: 700px;
+    margin: 30px auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -69,7 +70,7 @@ body {
 
     button {
       width: 20%;
-      margin: 6px auto;
+      margin: 6px 20px;
     }
 
     &:hover {
@@ -95,14 +96,16 @@ body {
 
   div {
     font-size: 1.2rem;
-    line-height: 2.3rem;
+    line-height: 2srem;
     margin-top: 30px;
+    word-wrap: break-word;
   }
 }
 
 .authentication {
   width: 50%;
-  border: 1px solid $grey-color;
+  box-shadow: $box-shadow;
+  // border: 1px solid $grey-color;
   padding: 15px;
   margin: 20px auto;
   height: 400px;

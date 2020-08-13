@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useCallback } from "react";
 import "./main.scss";
 import Posts from "./components/Posts/Posts";
 import NewPost from "./components/NewPost/NewPost";
@@ -50,7 +50,6 @@ function App() {
   const deletePostHandler = (postId) => {
     const postsFiltered = postsState.posts.filter((post) => post.id !== postId);
 
-    //dispatch({ type: "SET_LOADING" });
     dispatch({ type: "UPDATE_POSTS", value: postsFiltered });
 
     axios
@@ -79,37 +78,33 @@ function App() {
     dispatch({ type: "CLEAR_POSTS" });
   };
 
+  const getPosts = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`
+      );
+      dispatch({ type: "UPDATE_POSTS", value: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [authenticationState.isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
-    console.log("App [UseEffect]");
-    // checking if the user has logged in before
     const userData = JSON.parse(localStorage.getItem("userData"));
 
     if (userData !== null) {
-      // and if the stored expiration date is in the future
       if (new Date() < new Date(userData.expireDate)) {
         dispatchAuth({ type: "LOGIN", value: userData });
       } else {
-        // if the expiration date is passed, logout.
         onLogoutHandler();
       }
     }
-
-    const getPosts = async () => {
-      try {
-        const response = await axios.get(
-          `https://blogsome-f30d4.firebaseio.com/users/${authenticationState.authenticationData.localId}/posts.json`
-        );
-        dispatch({ type: "UPDATE_POSTS", value: response.data });
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
     if (authenticationState.isAuthenticated) {
       dispatch({ type: "SET_LOADING" });
       getPosts();
     }
-  }, [authenticationState.isAuthenticated]);
+  }, [authenticationState.isAuthenticated, getPosts]);
 
   let routes = (
     <Switch>

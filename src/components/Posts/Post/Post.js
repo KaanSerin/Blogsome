@@ -9,19 +9,20 @@ const Post = ({ id, title, body, deletePostHandler }) => {
     <div className="post">
       <h3>{title}</h3>
       <p>{body.slice(0, 40) + "..."}</p>
-      <p>likes</p>
-      <Button
-        onClick={() => {
-          history.push(`/my-posts/post?id=${id}`);
-        }}
-        color="info"
-      >
-        View Post
-      </Button>
+      <span>
+        <Button
+          onClick={() => {
+            history.push(`/my-posts/post?id=${id}`);
+          }}
+          color="info"
+        >
+          View Post
+        </Button>
 
-      <Button onClick={deletePostHandler} outline color="danger">
-        Delete Post
-      </Button>
+        <Button onClick={deletePostHandler} outline color="danger">
+          Delete Post
+        </Button>
+      </span>
     </div>
   );
 };

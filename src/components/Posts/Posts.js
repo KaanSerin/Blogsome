@@ -9,7 +9,7 @@ const Posts = ({ posts, isLoading, deletePost }) => {
       {posts.map((post) => (
         <CSSTransition
           key={post.id}
-          timeout={300}
+          timeout={500}
           classNames="postItem"
           unmountOnExit={true}
           appear={true}
